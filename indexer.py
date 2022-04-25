@@ -21,6 +21,7 @@ class Indexer:
         root = et.parse(sys.argv[1]).getroot()
         self.all_pages = root.findall("page")
         self.words_to_id_to_count = {}
+        self.page_to_links = {}
 
     def tokenize_stop_stem(page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
@@ -81,9 +82,9 @@ class Indexer:
             # all_words = re.findall(n_regex, text)
             # all_words is a list of tokenize/stemmed/stopped words for a given page
             all_words_in_page = self.tokenize_stop_stem(text)[0]
+            self.page_to_links[id] = self.tokenize_stop_stem(text)[1]
 
-        
-        #NEED TO STEM AND REMOVE STOP WORDS
+
             words_to_id_tf = {}
             max_count = 0
 
