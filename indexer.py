@@ -88,7 +88,6 @@ class Indexer:
             max_count = 0
 
             for word in all_words_in_page: 
-
                 if word in self.words_to_id_to_count:
                     # might cause problem w diff ids idk tho
                     self.words_to_id_to_count[word][id] += 1
