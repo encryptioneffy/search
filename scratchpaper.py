@@ -4,21 +4,23 @@ import file_io
 import xml.etree.ElementTree as et
 import re
 import math
-
 from nltk.corpus import stopwords
 STOP_WORDS = set(stopwords.words('english'))
-
 from nltk.stem import PorterStemmer
 # nltk_test = PorterStemmer()
 # nltk_test.stem("Stemming")
+
+'''text1 = "Hey! My name is EFfy and I like [[Sharks|Hammerheads]]. I do NOT like [[Whale]] [[Sharks]]. By the way, Mom asked [[How are you?]]. She is worried worry about the [[Presidents|Losing Money]]. Now we are stemming some cheesy, running, and funny English word words. Going to sleep sleeps slept sleeping."
+'''
 
 '''This function successfully tokenizes a really long string into a list 
 of lower case words-strings, with Link Titles removed, multi-word Link Text  
 included in the corpus, and all words stopped & stemmed. '''
 
-# We should play around with how tokenize, stop, stem are organized. Will they 
-# be in separate helper functions? Or altogether in 1 function? Which version
-# will minimize the amount of times we have to loop through a list?
+'''We should play around with how tokenize, stop, stem are organized. Will they 
+be in separate helper functions? Or altogether in 1 function? Which version
+will minimize the amount of times we have to loop through a list? '''
+
 def tokenize_stop_stem(page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         l_regex = '''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
@@ -36,11 +38,6 @@ def tokenize_stop_stem(page_text : str) -> list:
                     link_title, link_text = word.split("|")
                     link_text_tokens = re.findall(n_regex, link_text) 
 
-                    # we can play around with how we wanna store links. 
-                    # Do we want to put it in dict immediately? Or just have
-                    # the helper function output the inner set that will be the value
-                    # of the linking dict?
-                    # currenty I am just storing it as a set of link titles
                     link_title = link_title.replace("[[", "")
                 else: 
                     link_text_tokens = re.findall(l_regex, word)
