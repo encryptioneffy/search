@@ -81,6 +81,7 @@ class Indexer:
 
     def make_word_dict(self):
         words_to_id_tf = {}
+        id_to_max_count = {}
 
         for page in self.all_pages:
             text: str = page.find("text").text
@@ -90,9 +91,8 @@ class Indexer:
             all_words_in_page = self.tokenize_stop_stem(text)[0]
             self.page_to_links[id] = self.tokenize_stop_stem(text)[1]
 
-
-            
             max_count = 0
+            
 
             for word in all_words_in_page: 
                 if word not in self.words_to_id_to_count:
@@ -107,16 +107,18 @@ class Indexer:
                 
                 if self.words_to_id_to_count[word][id] > max_count:
                     max_count = self.words_to_id_to_count[word][id]
-                    
+    
+            id_to_max_count[id] = max_count 
+            print(id_to_max_count)       
             print(self.words_to_id_to_count)   
             # go through page: to find raw freq & max count, again to calc tf
         
         for word in self.words_to_id_to_count.keys():
             for id in self.words_to_id_to_count[word].keys():
                 if word not in words_to_id_tf:
-                    words_to_id_tf[word]= {id:(self.words_to_id_to_count[word][id]) / max_count}
+                    words_to_id_tf[word]= {id:(self.words_to_id_to_count[word][id]) / id_to_max_count[id]}
                 else:
-                    words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / max_count
+                    words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / id_to_max_count[id]
 
         n = len(self.all_pages)
         words_to_idf = {}
