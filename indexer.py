@@ -113,6 +113,7 @@ class Indexer:
             print(self.words_to_id_to_count)   
             # go through page: to find raw freq & max count, again to calc tf
         
+        
         for word in self.words_to_id_to_count.keys():
             for id in self.words_to_id_to_count[word].keys():
                 if word not in words_to_id_tf:
@@ -123,6 +124,7 @@ class Indexer:
         n = len(self.all_pages)
         words_to_idf = {}
 
+        
         for word in self.words_to_id_to_count.keys():
             n_i = len(self.words_to_id_to_count[word])
             # if word not in words_to_idf:
@@ -131,6 +133,7 @@ class Indexer:
         print(words_to_id_tf)
         print(words_to_idf)
 
+        
         for word in self.words_to_id_to_count.keys():
             for id in self.words_to_id_to_count[word].keys():
                 if word not in self.word_dict:
