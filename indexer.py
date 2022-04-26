@@ -26,11 +26,16 @@ class Indexer:
         self.page_to_links = {}
         self.graph_dict = {}
         self.id_to_linked_ids = {}
+        self.n = len(self.all_pages)
+        self.weight_dict = {}
+        self.old_rank_dict = {}
+        self.new_rank_dict = {}
 
         self.make_title_dict()
         self.make_word_dict()
+        self.make_weight_dict()
 
-    def tokenize_stop_stem(page_text : str) -> list:
+    def tokenize_stop_stem(self, page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         l_regex = '''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         nltk_stemmer = PorterStemmer()
@@ -78,7 +83,7 @@ class Indexer:
             title: str = page.find('title').text
             self.id_to_title_dict[id] = title
             self.title_to_id_dict[title] = id
-        write_title_file(self.title_file, self.title_dict)
+        write_title_file(self.title_file, self.id_to_title_dict)
 
     def make_word_dict(self):
         words_to_id_tf = {}
@@ -89,6 +94,7 @@ class Indexer:
             id: int = int(page.find("id").text)
             # all_words = re.findall(n_regex, text)
             # all_words is a list of tokenize/stemmed/stopped words for a given page
+            print(text)
             all_words_in_page = self.tokenize_stop_stem(text)[0]
             self.page_to_links[id] = self.tokenize_stop_stem(text)[1]
 
@@ -122,14 +128,14 @@ class Indexer:
                 else:
                     words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / id_to_max_count[id]
 
-        n = len(self.all_pages)
+        
         words_to_idf = {}
 
         
         for word in self.words_to_id_to_count.keys():
             n_i = len(self.words_to_id_to_count[word])
             # if word not in words_to_idf:
-            words_to_idf[word] = math.log(n/n_i)
+            words_to_idf[word] = math.log(self.n/n_i)
         
         print(words_to_id_tf)
         print(words_to_idf)
@@ -149,6 +155,43 @@ class Indexer:
             for title in self.page_to_links[id]:
                 linked_ids_set.add(self.title_to_id_dict[title])
             self.id_to_linked_ids[id] = linked_ids_set
+        
+        
+
+        
+
+
+
+    
+    def weight_calculator(self, from_id, to_id):
+        if to_id in self.id_to_linked_ids[from_id]:
+            return 0.15/self.n + 0.85/len(self.id_to_linked_ids[id])
+        else:
+            return 0.15/self.n
+
+    def make_weight_dict(self):
+        for from_id in self.id_to_linked_ids.keys():
+            for to_id in self.id_to_title_dict.keys():
+                if from_id not in self.weight_dict:
+                    self.weight_dict[from_id] = {to_id : self.weight_calculator(from_id, to_id)}
+                else:
+                    self.weight_dict[from_id][to_id] = self.weight_calculator(from_id, to_id)
+
+    def distance(self, old_rank, new_rank):
+        total_distance = 0 
+        for id in self.id_to_title_dict.keys():
+            
+            
+
+
+
+
+    
+    
+
+
+
+        
         
 
                  
