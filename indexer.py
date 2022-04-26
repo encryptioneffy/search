@@ -73,7 +73,7 @@ class Indexer:
             id: int = page.find("id").text
             title: str = page.find('title').text
             self.title_dict[id] = title
-        file_io.write_title_file(self.title_file, self.title_dict)
+        write_title_file(self.title_file, self.title_dict)
 
     def make_word_dict(self):
         for page in self.all_pages:
