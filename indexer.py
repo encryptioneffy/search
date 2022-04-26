@@ -27,28 +27,25 @@ class Indexer:
         self.make_title_dict()
         self.make_word_dict()
 
-    def tokenize_stop_stem(self, page_text : str) -> list:
+    def tokenize_stop_stem(page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         l_regex = '''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         nltk_stemmer = PorterStemmer()
         tokenized_words = []
-        list_of_link_titles = [] #set of all page titles this page_text links to
+        list_of_link_titles = [] #list of all the page titles this page_text links to
 
         # TOKENIZE
         page_tokens = re.findall(n_regex, page_text)
 
         for word in page_tokens:
-            # identifying links in text, storing them for when we do PageRank 
+            # identifying links in text, storing them for when we do PageRank later
             if re.match('''\[\[[^\[]+?\]\]''', word) != None:
                 if "|" in word:
-                    link_title, link_text = word.split("|")
+                    pipe_link_stuff = word.split("|")
+                    link_title = pipe_link_stuff[0]
+                    link_text = pipe_link_stuff[1]
                     link_text_tokens = re.findall(n_regex, link_text) 
 
-                    # we can play around with how we wanna store links. 
-                    # Do we want to put it in dict immediately? Or just have
-                    # the helper function output the inner set that will be 
-                    # the value of the linking dict?
-                    # currenty I am just storing it as a set of link titles
                     link_title = link_title.replace("[[", "")
                 else: 
                     link_text_tokens = re.findall(l_regex, word)

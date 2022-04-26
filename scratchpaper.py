@@ -35,7 +35,9 @@ def tokenize_stop_stem(page_text : str) -> list:
             # identifying links in text, storing them for when we do PageRank later
             if re.match('''\[\[[^\[]+?\]\]''', word) != None:
                 if "|" in word:
-                    link_title, link_text = word.split("|")
+                    pipe_link_stuff = word.split("|")
+                    link_title = pipe_link_stuff[0]
+                    link_text = pipe_link_stuff[1]
                     link_text_tokens = re.findall(n_regex, link_text) 
 
                     link_title = link_title.replace("[[", "")
