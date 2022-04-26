@@ -16,13 +16,16 @@ class Indexer:
         self.title_file = sys.argv[2]
         self.doc_file = sys.argv[3]
         self.word_file = sys.argv[4]
-        self.title_dict = {}
+        self.id_to_title_dict = {}
+        self.title_to_id_dict = {}
         self.doc_dict = {}
         self.word_dict = {}
         root = et.parse(sys.argv[1]).getroot()
         self.all_pages = root.findall("page")
         self.words_to_id_to_count = {}
         self.page_to_links = {}
+        self.graph_dict = {}
+        self.id_to_linked_ids = {}
 
         self.make_title_dict()
         self.make_word_dict()
@@ -32,7 +35,7 @@ class Indexer:
         l_regex = '''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         nltk_stemmer = PorterStemmer()
         tokenized_words = []
-        list_of_link_titles = [] #list of all the page titles this page_text links to
+        set_of_link_titles = set()
 
         # TOKENIZE
         page_tokens = re.findall(n_regex, page_text)
@@ -60,20 +63,21 @@ class Indexer:
 
                 # saves link_title to a data structure, making sure
                 # there are no duplicate links stored for given page_text
-                if link_title not in list_of_link_titles:
-                    list_of_link_titles.append(link_title)
+                if link_title not in set_of_link_titles:
+                    set_of_link_titles.add(link_title)
             else:
                 word = word.lower()
                 if word not in STOP_WORDS:
                     tokenized_words.append(nltk_stemmer.stem(word))
         
-        return(tokenized_words, list_of_link_titles)
+        return(tokenized_words, set_of_link_titles)
 
     def make_title_dict(self):
         for page in self.all_pages:
             id: int = page.find("id").text
             title: str = page.find('title').text
-            self.title_dict[id] = title
+            self.id_to_title_dict[id] = title
+            self.title_to_id_dict[title] = id
         write_title_file(self.title_file, self.title_dict)
 
     def make_word_dict(self):
@@ -139,23 +143,15 @@ class Indexer:
                     self.word_dict[word][id] = words_to_id_tf[word][id] * words_to_idf[word]
         write_words_file(self.word_file, self.word_dict)
 
+    def make_doc_dict(self):
+        for id in self.page_to_links:
+            linked_ids_set = set()
+            for title in self.page_to_links[id]:
+                linked_ids_set.add(self.title_to_id_dict[title])
+            self.id_to_linked_ids[id] = linked_ids_set
+        
+
+                 
+
 if __name__ == "__main__":
     my_indexer = Indexer(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
-
-# words_to_id_to_count ={}
-# def write_words_file(dict: words_file):
-#     n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
-#     for page in all_pages:
-#         text: str = page.find("text").text
-#         id: int = page.find("id").text
-#         all_words = re.findall(n_regex, text)
-#         # all_words = text.split(" ") #getting list of allwords
-#         #NEED TO STEM AND REMOVE STOP WORDS
-#         words_to_tf = {}
-#         words_to_idf ={}
-#         for word in all_words: 
-#             words_to_id_to_count[word][id] = all_words.count(word)
-
-# # # sys.argv = 1, 2, 3
-
-# print(sys.argv)
