@@ -1,6 +1,7 @@
 from array import array
 import sys
 import file_io
+from file_io import *
 import xml.etree.ElementTree as et
 import nltk
 import re
@@ -23,7 +24,10 @@ class Indexer:
         self.words_to_id_to_count = {}
         self.page_to_links = {}
 
-    def tokenize_stop_stem(page_text : str) -> list:
+        self.make_title_dict()
+        self.make_word_dict()
+
+    def tokenize_stop_stem(self, page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         l_regex = '''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         nltk_stemmer = PorterStemmer()
@@ -76,49 +80,65 @@ class Indexer:
         write_title_file(self.title_file, self.title_dict)
 
     def make_word_dict(self):
+        words_to_id_tf = {}
+
         for page in self.all_pages:
             text: str = page.find("text").text
-            id: int = page.find("id").text
+            id: int = int(page.find("id").text)
             # all_words = re.findall(n_regex, text)
             # all_words is a list of tokenize/stemmed/stopped words for a given page
             all_words_in_page = self.tokenize_stop_stem(text)[0]
             self.page_to_links[id] = self.tokenize_stop_stem(text)[1]
 
 
-            words_to_id_tf = {}
+            
             max_count = 0
 
             for word in all_words_in_page: 
-
-                if word in self.words_to_id_to_count:
+                if word not in self.words_to_id_to_count:
+                    # add id first
+                    self.words_to_id_to_count[word]= {id:1}
                     # might cause problem w diff ids idk tho
-                    self.words_to_id_to_count[word][id] += 1
-                    if self.words_to_id_to_count[word][id] > max_count:
-                        max_count = self.words_to_id_to_count[word][id]
                 else:
-                    self.words_to_id_to_count[word][id] = 1
+                    if id not in self.words_to_id_to_count[word].keys():
+                        self.words_to_id_to_count[word][id] = 1
+                    else:
+                        self.words_to_id_to_count[word][id] += 1
+                
+                if self.words_to_id_to_count[word][id] > max_count:
+                    max_count = self.words_to_id_to_count[word][id]
                     
-            for word in all_words_in_page:
-                words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / max_count
+            print(self.words_to_id_to_count)   
+            # go through page: to find raw freq & max count, again to calc tf
+        
+        for word in self.words_to_id_to_count.keys():
+            for id in self.words_to_id_to_count[word].keys():
+                if word not in words_to_id_tf:
+                    words_to_id_tf[word]= {id:(self.words_to_id_to_count[word][id]) / max_count}
+                else:
+                    words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / max_count
 
         n = len(self.all_pages)
         words_to_idf = {}
 
-        for word in self.words_to_id_to_count:
+        for word in self.words_to_id_to_count.keys():
             n_i = len(self.words_to_id_to_count[word])
+            # if word not in words_to_idf:
             words_to_idf[word] = math.log(n/n_i)
-        for page in self.all_pages:
-            id: int = page.find("id").text
-            self.word_file[word][id] = words_to_id_tf[word][id] * words_to_idf[word]
         
-        file_io.write_words_file(sys.argv[4], self.word_file)
+        print(words_to_id_tf)
+        print(words_to_idf)
 
-        
+        for word in self.words_to_id_to_count.keys():
+            for id in self.words_to_id_to_count[word].keys():
+                if word not in self.word_dict:
+                    self.word_dict[word] = {id : words_to_id_tf[word][id] * words_to_idf[word]}
+                else: 
+                    self.word_dict[word][id] = words_to_id_tf[word][id] * words_to_idf[word]
+        write_words_file(self.word_file, self.word_dict)
 
-
-
-
-
+if __name__ == "__main__":
+    my_indexer = Indexer(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
 # words_to_id_to_count ={}
 # def write_words_file(dict: words_file):
