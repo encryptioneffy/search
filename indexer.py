@@ -25,6 +25,7 @@ class Indexer:
         self.words_to_id_to_count = {}
         self.page_to_links = {}
         self.graph_dict = {}
+        self.id_to_linked_ids = {}
 
         self.make_title_dict()
         self.make_word_dict()
@@ -140,25 +141,14 @@ class Indexer:
         write_words_file(self.word_file, self.word_dict)
 
     def make_doc_dict(self):
+        for id in self.page_to_links:
+            linked_ids_set = set()
+            for title in self.page_to_links[id]:
+                linked_ids_set.add(self.title_to_id_dict[title])
+            self.id_to_linked_ids[id] = linked_ids_set
         
+
+                 
 
 if __name__ == "__main__":
     my_indexer = Indexer(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
-
-# words_to_id_to_count ={}
-# def write_words_file(dict: words_file):
-#     n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
-#     for page in all_pages:
-#         text: str = page.find("text").text
-#         id: int = page.find("id").text
-#         all_words = re.findall(n_regex, text)
-#         # all_words = text.split(" ") #getting list of allwords
-#         #NEED TO STEM AND REMOVE STOP WORDS
-#         words_to_tf = {}
-#         words_to_idf ={}
-#         for word in all_words: 
-#             words_to_id_to_count[word][id] = all_words.count(word)
-
-# # # sys.argv = 1, 2, 3
-
-# print(sys.argv)
