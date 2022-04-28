@@ -94,7 +94,6 @@ class Indexer:
             id: int = int(page.find("id").text)
             # all_words = re.findall(n_regex, text)
             # all_words is a list of tokenize/stemmed/stopped words for a given page
-            print(text)
             all_words_in_page = self.tokenize_stop_stem(text)[0]
             self.page_to_links[id] = self.tokenize_stop_stem(text)[1]
 
@@ -116,8 +115,8 @@ class Indexer:
                     max_count = self.words_to_id_to_count[word][id]
     
             id_to_max_count[id] = max_count 
-            print(id_to_max_count)       
-            print(self.words_to_id_to_count)   
+            # print(id_to_max_count)       
+            # print(self.words_to_id_to_count)   
             # go through page: to find raw freq & max count, again to calc tf
         
         
@@ -137,8 +136,8 @@ class Indexer:
             # if word not in words_to_idf:
             words_to_idf[word] = math.log(self.n/n_i)
         
-        print(words_to_id_tf)
-        print(words_to_idf)
+        # print(words_to_id_tf)
+        # print(words_to_idf)
 
         
         for word in self.words_to_id_to_count.keys():
@@ -155,8 +154,21 @@ class Indexer:
             for title in self.page_to_links[id]:
                 linked_ids_set.add(self.title_to_id_dict[title])
             self.id_to_linked_ids[id] = linked_ids_set
+
+        self.fill_rank_dicts()
+        
+        while self.distance(self.old_rank_dict, self.new_rank_dict) > 0.001:
+            # print(self.new_rank_dict)
+            self.old_rank_dict = self.new_rank_dict
+            for to_id in self.id_to_title_dict.keys():
+                self.new_rank_dict[from_id] = 0
+                for from_id in self.id_to_title_dict.keys():
+                    self.new_rank_dict[to_id] += (self.weight_calculator(from_id, to_id) * self.old_rank_dict[from_id])
         
         
+        # self.doc_dict = self.new_rank_dict
+
+        write_docs_file(self.doc_file, self.new_rank_dict)
 
         
 
@@ -180,7 +192,16 @@ class Indexer:
     def distance(self, old_rank, new_rank):
         total_distance = 0 
         for id in self.id_to_title_dict.keys():
-            
+            total_distance += (old_rank[id] - new_rank[id]) ** 2
+        return total_distance ** 1/2
+
+    def fill_rank_dicts(self):
+        for id in self.id_to_title_dict.keys():
+            self.old_rank_dict[id] = 0
+            self.new_rank_dict[id] = 1/self.n
+    
+
+
             
 
 
