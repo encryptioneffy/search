@@ -166,9 +166,9 @@ class Indexer:
                     self.new_rank_dict[to_id] += (self.weight_calculator(from_id, to_id) * self.old_rank_dict[from_id])
         
         
-        # self.doc_dict = self.new_rank_dict
+        self.doc_dict = self.new_rank_dict
 
-        write_docs_file(self.doc_file, self.new_rank_dict)
+        write_docs_file(self.doc_file, self.doc_dict)
 
         
 
