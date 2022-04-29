@@ -120,8 +120,6 @@ class Indexer:
                     max_count = self.words_to_id_to_count[word][id]
     
             id_to_max_count[id] = max_count 
-            # print(id_to_max_count)       
-            # print(self.words_to_id_to_count)   
             # go through page: to find raw freq & max count, again to calc tf
         
         
@@ -140,9 +138,6 @@ class Indexer:
             n_i = len(self.words_to_id_to_count[word])
             # if word not in words_to_idf:
             words_to_idf[word] = math.log(self.n/n_i)
-        
-        # print(words_to_id_tf)
-        # print(words_to_idf)
 
         
         for word in self.words_to_id_to_count.keys():
@@ -200,32 +195,6 @@ class Indexer:
                 to_id_weight[to_id] = weight
             
             self.weight_dict[from_id] = to_id_weight
-
-
-                
-
-
-            
-
-
-        # print(self.id_to_linked_ids)
-        # if from_id in self.id_to_linked_ids.keys():
-        #     if len(self.id_to_linked_ids[from_id]) == 0:
-        #         return 0.15/self.n
-        #     if to_id in self.id_to_linked_ids[from_id]:
-        #         return 0.15/self.n + 0.85/len(self.id_to_linked_ids[from_id])
-        #     else:
-        #         return 0.15/self.n
-        # else:
-        #     return 0.15/self.n
-
-    # def make_weight_dict(self):
-    #     for from_id in self.id_to_title_dict.keys():
-    #         for to_id in self.id_to_title_dict.keys():
-    #             if from_id not in self.weight_dict:
-    #                 self.weight_dict[from_id] = {to_id : self.weight_calculator(from_id, to_id)}
-    #             else:
-    #                 self.weight_dict[from_id][to_id] = self.weight_calculator(from_id, to_id)
 
     def distance(self, old_rank, new_rank):
         total_distance = 0 
