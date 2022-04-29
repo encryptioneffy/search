@@ -161,7 +161,11 @@ class Indexer:
         self.fill_rank_dicts()
         
         while self.distance(self.old_rank_dict, self.new_rank_dict) > 0.001:
-            self.old_rank_dict = self.new_rank_dict
+            print(self.old_rank_dict)
+            print(self.new_rank_dict)
+            # print(self.distance(self.old_rank_dict, self.new_rank_dict))
+            for id in self.id_to_title_dict.keys():
+                self.old_rank_dict[id] = self.new_rank_dict[id]
             for to_id in self.id_to_title_dict.keys():
                 self.new_rank_dict[to_id] = 0
                 for from_id in self.id_to_title_dict.keys():
@@ -175,11 +179,11 @@ class Indexer:
         for from_id in self.id_to_title_dict.keys():
             if len(self.id_to_linked_ids[from_id]) == 0:
                 link_count = self.n -1
-            elif len(self.id_to_linked_ids[from_id]) == 1 and id in self.id_to_linked_ids[from_id]:
+            elif len(self.id_to_linked_ids[from_id]) == 1 and from_id in self.id_to_linked_ids[from_id]:
                 link_count = self.n -1
             else:
                 link_count = len(self.id_to_linked_ids[from_id])
-                if id in self.id_to_linked_ids[from_id] and len(self.id_to_linked_ids[from_id]) > 1:
+                if from_id in self.id_to_linked_ids[from_id] and len(self.id_to_linked_ids[from_id]) > 1:
                     link_count -= 1
             to_id_weight = {}
 
@@ -195,17 +199,21 @@ class Indexer:
                 to_id_weight[to_id] = weight
             
             self.weight_dict[from_id] = to_id_weight
+        # print(self.weight_dict)
 
     def distance(self, old_rank, new_rank):
         total_distance = 0 
         for id in self.id_to_title_dict.keys():
-            total_distance += (old_rank[id] - new_rank[id]) ** 2
-        return total_distance ** 1/2
+            total_distance += ((old_rank[id] - new_rank[id]) ** 2)
+            # print(total_distance)
+        return math.sqrt(total_distance)
 
     def fill_rank_dicts(self):
         for id in self.id_to_title_dict.keys():
             self.old_rank_dict[id] = 0
             self.new_rank_dict[id] = 1/self.n
+
+        # print(self.distance(self.old_rank_dict, self.new_rank_dict))
     
 
 
