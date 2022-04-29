@@ -178,12 +178,16 @@ class Indexer:
 
     
     def weight_calculator(self, from_id, to_id):
-        print(self.id_to_linked_ids)
-
-        if to_id not in self.id_to_linked_ids[from_id] or len(self.id_to_linked_ids[from_id]) == 0:
-            return 0.15/self.n
+        # print(self.id_to_linked_ids)
+        if from_id in self.id_to_linked_ids.keys():
+            if len(self.id_to_linked_ids[from_id]) == 0:
+                return 0.15/self.n
+            if to_id in self.id_to_linked_ids[from_id]:
+                return 0.15/self.n + 0.85/len(self.id_to_linked_ids[from_id])
+            else:
+                return 0.15/self.n
         else:
-            return 0.15/self.n + 0.85/len(self.id_to_linked_ids[from_id])
+            return 0.15/self.n
 
     def make_weight_dict(self):
         for from_id in self.id_to_title_dict.keys():
