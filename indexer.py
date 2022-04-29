@@ -35,13 +35,14 @@ class Indexer:
         self.make_word_dict()
         self.make_weight_dict()
         self.make_doc_dict()
+        print(2 ** 3)
 
     def tokenize_stop_stem(self, page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         l_regex = '''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         nltk_stemmer = PorterStemmer()
         tokenized_words = []
-        set_of_link_titles = set()
+        set_of_link_titles = []
 
         # TOKENIZE
         page_tokens = re.findall(n_regex, page_text)
@@ -70,7 +71,7 @@ class Indexer:
                 # saves link_title to a data structure, making sure
                 # there are no duplicate links stored for given page_text
                 if link_title not in set_of_link_titles:
-                    set_of_link_titles.add(link_title)
+                    set_of_link_titles.append(link_title)
             else:
                 word = word.lower()
                 if word not in STOP_WORDS:
@@ -152,20 +153,21 @@ class Indexer:
 
     def make_doc_dict(self):
         for id in self.page_to_links:
-            linked_ids_set = set()
+            linked_ids = []
             for title in self.page_to_links[id]:
-                linked_ids_set.add(self.title_to_id_dict[title])
-            self.id_to_linked_ids[id] = linked_ids_set
+                if title not in linked_ids:
+                    linked_ids.append(self.title_to_id_dict[title])
+            print(linked_ids)
+            self.id_to_linked_ids[id] = linked_ids
 
         self.fill_rank_dicts()
         
         while self.distance(self.old_rank_dict, self.new_rank_dict) > 0.001:
-            # print(self.new_rank_dict)
             self.old_rank_dict = self.new_rank_dict
             for to_id in self.id_to_title_dict.keys():
                 self.new_rank_dict[to_id] = 0
                 for from_id in self.id_to_title_dict.keys():
-                    self.new_rank_dict[to_id] += (self.weight_calculator(from_id, to_id) * self.old_rank_dict[from_id])
+                    self.new_rank_dict[to_id] += (self.weight_dict[from_id][to_id] * self.old_rank_dict[from_id])
         
         
         self.doc_dict = self.new_rank_dict
@@ -178,7 +180,7 @@ class Indexer:
 
     
     def weight_calculator(self, from_id, to_id):
-        # print(self.id_to_linked_ids)
+        print(self.id_to_linked_ids)
         if from_id in self.id_to_linked_ids.keys():
             if len(self.id_to_linked_ids[from_id]) == 0:
                 return 0.15/self.n
