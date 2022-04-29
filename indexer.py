@@ -34,6 +34,7 @@ class Indexer:
         self.make_title_dict()
         self.make_word_dict()
         self.make_weight_dict()
+        self.make_doc_dict()
 
     def tokenize_stop_stem(self, page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
@@ -95,7 +96,8 @@ class Indexer:
             # all_words = re.findall(n_regex, text)
             # all_words is a list of tokenize/stemmed/stopped words for a given page
             all_words_in_page = self.tokenize_stop_stem(text)[0]
-            self.page_to_links[id] = self.tokenize_stop_stem(text)[1]
+            links_set = self.tokenize_stop_stem(text)[1]
+            self.page_to_links[id] = links_set
 
             max_count = 0
             
@@ -161,7 +163,7 @@ class Indexer:
             # print(self.new_rank_dict)
             self.old_rank_dict = self.new_rank_dict
             for to_id in self.id_to_title_dict.keys():
-                self.new_rank_dict[from_id] = 0
+                self.new_rank_dict[to_id] = 0
                 for from_id in self.id_to_title_dict.keys():
                     self.new_rank_dict[to_id] += (self.weight_calculator(from_id, to_id) * self.old_rank_dict[from_id])
         
@@ -176,10 +178,12 @@ class Indexer:
 
     
     def weight_calculator(self, from_id, to_id):
-        if to_id in self.id_to_linked_ids[from_id]:
-            return 0.15/self.n + 0.85/len(self.id_to_linked_ids[id])
-        else:
+        print(self.id_to_linked_ids[from_id])
+
+        if to_id not in self.id_to_linked_ids[from_id] or len(self.id_to_linked_ids[from_id]) == 0:
             return 0.15/self.n
+        else:
+            return 0.15/self.n + 0.85/len(self.id_to_linked_ids[from_id])
 
     def make_weight_dict(self):
         for from_id in self.id_to_linked_ids.keys():
