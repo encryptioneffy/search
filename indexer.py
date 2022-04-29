@@ -80,7 +80,7 @@ class Indexer:
 
     def make_title_dict(self):
         for page in self.all_pages:
-            id: int = page.find("id").text
+            id: int = int(page.find("id").text)
             title: str = page.find('title').text
             self.id_to_title_dict[id] = title
             self.title_to_id_dict[title] = id
@@ -178,7 +178,7 @@ class Indexer:
 
     
     def weight_calculator(self, from_id, to_id):
-        print(self.id_to_linked_ids[from_id])
+        print(self.id_to_linked_ids)
 
         if to_id not in self.id_to_linked_ids[from_id] or len(self.id_to_linked_ids[from_id]) == 0:
             return 0.15/self.n
@@ -186,7 +186,7 @@ class Indexer:
             return 0.15/self.n + 0.85/len(self.id_to_linked_ids[from_id])
 
     def make_weight_dict(self):
-        for from_id in self.id_to_linked_ids.keys():
+        for from_id in self.id_to_title_dict.keys():
             for to_id in self.id_to_title_dict.keys():
                 if from_id not in self.weight_dict:
                     self.weight_dict[from_id] = {to_id : self.weight_calculator(from_id, to_id)}
