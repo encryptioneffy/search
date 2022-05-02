@@ -123,6 +123,10 @@ if __name__ == "__main__":
             break
 
         the_querier = Query()
-        the_querier.make_score_dict(user_input)
+        if the_querier.page_rank_yn:
+            the_querier.make_page_rank_dict(user_input)
+        else:
+            the_querier.make_score_dict(user_input)
+        
         print(the_querier.get_top_ten())
         
