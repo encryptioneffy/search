@@ -153,7 +153,8 @@ class Indexer:
             linked_ids = []
             for title in self.page_to_links[id]:
                 if title not in linked_ids:
-                    linked_ids.append(self.title_to_id_dict[title])
+                    if title in self.title_to_id_dict.keys():
+                        linked_ids.append(self.title_to_id_dict[title])
             print(linked_ids)
             self.id_to_linked_ids[id] = linked_ids
 
