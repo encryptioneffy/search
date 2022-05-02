@@ -80,9 +80,9 @@ class Query:
                 if word in self.word_dict.keys():
                     if page_id in self.word_dict[word].keys():
                         score = self.word_dict[word][page_id]
-            doc_score += score
+            doc_score += score 
 
-            self.id_to_scores_dict[page_id] = doc_score
+            self.id_to_scores_dict[page_id] = doc_score + self.doc_dict[page_id]
             
         # should querier still return a page if no query terms in page?
 
