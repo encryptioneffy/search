@@ -103,12 +103,15 @@ class Query:
         else:
             top_ten_tuples = x
         
-        top_ten_titles = []
+        top_ten_ids = []
         for pair in top_ten_tuples:
-            top_ten_titles.append(pair[0])
+            top_ten_ids.append(pair[0])
+
+        top_ten_titles = []
+        for id in top_ten_ids:
+            top_ten_titles.append(self.title_dict[id])
 
         return top_ten_titles
-    
 
 
 
