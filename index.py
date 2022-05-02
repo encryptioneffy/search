@@ -155,16 +155,12 @@ class Indexer:
                 if title not in linked_ids:
                     if title in self.title_to_id_dict.keys():
                         linked_ids.append(self.title_to_id_dict[title])
-            print(linked_ids)
             self.id_to_linked_ids[id] = linked_ids
 
     def make_doc_dict(self):
         self.fill_rank_dicts()
         
         while self.distance(self.old_rank_dict, self.new_rank_dict) > 0.001:
-            print(self.old_rank_dict)
-            print(self.new_rank_dict)
-            # print(self.distance(self.old_rank_dict, self.new_rank_dict))
             for id in self.id_to_title_dict.keys():
                 self.old_rank_dict[id] = self.new_rank_dict[id]
             for to_id in self.id_to_title_dict.keys():
@@ -200,21 +196,17 @@ class Indexer:
                 to_id_weight[to_id] = weight
             
             self.weight_dict[from_id] = to_id_weight
-        # print(self.weight_dict)
 
     def distance(self, old_rank, new_rank):
         total_distance = 0 
         for id in self.id_to_title_dict.keys():
             total_distance += ((old_rank[id] - new_rank[id]) ** 2)
-            # print(total_distance)
         return math.sqrt(total_distance)
 
     def fill_rank_dicts(self):
         for id in self.id_to_title_dict.keys():
             self.old_rank_dict[id] = 0
             self.new_rank_dict[id] = 1/self.n
-
-        # print(self.distance(self.old_rank_dict, self.new_rank_dict))
     
 
 

@@ -18,7 +18,7 @@ class Query:
         if len(sys.argv) == 5:
             self.page_rank_yn = True
             self.title_file = sys.argv[2]
-            self.doc_file = sys.arg[3]
+            self.doc_file = sys.argv[3]
             self.word_file = sys.argv[4]
         else:
             self.page_rank_yn = False
@@ -82,7 +82,7 @@ class Query:
                         score = self.word_dict[word][page_id]
             doc_score += score 
 
-            self.id_to_scores_dict[page_id] = doc_score + self.doc_dict[page_id]
+            self.id_to_scores_dict[page_id] = doc_score * self.doc_dict[page_id]
             
         # should querier still return a page if no query terms in page?
 
