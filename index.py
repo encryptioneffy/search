@@ -84,7 +84,7 @@ class Indexer:
     def make_title_dict(self):
         for page in self.all_pages:
             id: int = int(page.find("id").text)
-            title: str = page.find('title').text
+            title: str = page.find('title').text.strip()
             self.id_to_title_dict[id] = title
             self.title_to_id_dict[title] = id
         write_title_file(self.title_file, self.id_to_title_dict)
