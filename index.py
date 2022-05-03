@@ -95,7 +95,7 @@ class Index:
     def make_word_dict(self):
 
         for page in self.all_pages:
-            text: str = page.find("text").text
+            text: str = page.find("text").text.strip()
             id: int = int(page.find("id").text)
             # all_words = re.findall(n_regex, text)
             # all_words is a list of tokenize/stemmed/stopped words for a given page
@@ -147,9 +147,9 @@ class Index:
                     self.word_dict[word] = {id : self.words_to_id_tf[word][id] * self.words_to_idf[word]}
                 else: 
                     self.word_dict[word][id] = self.words_to_id_tf[word][id] * self.words_to_idf[word]
-        print(self.words_to_id_tf)
-        print(self.words_to_idf)
-        print(self.id_to_max_count)
+        # print(self.words_to_id_tf)
+        # print(self.words_to_idf)
+        # print(self.id_to_max_count)
         write_words_file(self.word_file, self.word_dict)
 
     def make_id_to_link_dict(self):
@@ -200,6 +200,7 @@ class Index:
                 to_id_weight[to_id] = weight
             
             self.weight_dict[from_id] = to_id_weight
+        # print(self.weight_dict)
 
     def distance(self, old_rank, new_rank):
         total_distance = 0 
