@@ -10,7 +10,7 @@ from nltk.corpus import stopwords
 STOP_WORDS = set(stopwords.words('english'))
 from nltk.stem import PorterStemmer
 
-class Indexer:
+class Index:
     def __init__(self, xml_file, title_file, doc_file, word_file):
         self.xml_file = sys.argv[1]
         self.title_file = sys.argv[2]
@@ -30,6 +30,9 @@ class Indexer:
         self.weight_dict = {}
         self.old_rank_dict = {}
         self.new_rank_dict = {}
+        self.words_to_id_tf = {}
+        self.id_to_max_count = {}
+        self.words_to_idf = {}
 
         self.make_title_dict()
         self.make_word_dict()
@@ -90,8 +93,6 @@ class Indexer:
         write_title_file(self.title_file, self.id_to_title_dict)
 
     def make_word_dict(self):
-        words_to_id_tf = {}
-        id_to_max_count = {}
 
         for page in self.all_pages:
             text: str = page.find("text").text
@@ -119,33 +120,36 @@ class Indexer:
                 if self.words_to_id_to_count[word][id] > max_count:
                     max_count = self.words_to_id_to_count[word][id]
     
-            id_to_max_count[id] = max_count 
+            self.id_to_max_count[id] = max_count 
             # go through page: to find raw freq & max count, again to calc tf
         
         
         for word in self.words_to_id_to_count.keys():
             for id in self.words_to_id_to_count[word].keys():
-                if word not in words_to_id_tf:
-                    words_to_id_tf[word]= {id:(self.words_to_id_to_count[word][id]) / id_to_max_count[id]}
+                if word not in self.words_to_id_tf:
+                    self.words_to_id_tf[word]= {id:(self.words_to_id_to_count[word][id]) / self.id_to_max_count[id]}
                 else:
-                    words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / id_to_max_count[id]
+                    self.words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / self.id_to_max_count[id]
 
         
-        words_to_idf = {}
+        
 
         
         for word in self.words_to_id_to_count.keys():
             n_i = len(self.words_to_id_to_count[word])
             # if word not in words_to_idf:
-            words_to_idf[word] = math.log(self.n/n_i)
+            self.words_to_idf[word] = math.log(self.n/n_i)
 
         
         for word in self.words_to_id_to_count.keys():
             for id in self.words_to_id_to_count[word].keys():
                 if word not in self.word_dict:
-                    self.word_dict[word] = {id : words_to_id_tf[word][id] * words_to_idf[word]}
+                    self.word_dict[word] = {id : self.words_to_id_tf[word][id] * self.words_to_idf[word]}
                 else: 
-                    self.word_dict[word][id] = words_to_id_tf[word][id] * words_to_idf[word]
+                    self.word_dict[word][id] = self.words_to_id_tf[word][id] * self.words_to_idf[word]
+        print(self.words_to_id_tf)
+        print(self.words_to_idf)
+        print(self.id_to_max_count)
         write_words_file(self.word_file, self.word_dict)
 
     def make_id_to_link_dict(self):
@@ -226,4 +230,4 @@ class Indexer:
                  
 
 if __name__ == "__main__":
-    my_indexer = Indexer(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    my_index = Index(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
