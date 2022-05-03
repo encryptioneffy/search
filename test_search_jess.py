@@ -1,7 +1,7 @@
 from index import *
 import pytest
 
-index1 = Index("wikis/test_tf_idf.xml", "title", "doc", "word")
+index1 = Index("wikis/test1.xml", "title", "doc", "word")
 
 index1.make_word_dict()
 
@@ -14,11 +14,11 @@ assert index1.words_to_idf["woof"] == 0.0
 assert index1.words_to_idf["chees"] == 0.22314355131420976
 assert index1.words_to_idf["run"] == 0.9162907318741551
 
-assert index1.id_to_max_count[1] == 1
-assert index1.id_to_max_count[2] == 1
-assert index1.id_to_max_count[3] == 2
-assert index1.id_to_max_count[4] == 2
-assert index1.id_to_max_count[5] == 2
+assert index1.id_to_max_count[1] == 2
+assert index1.id_to_max_count[2] == 2
+assert index1.id_to_max_count[3] == 4
+assert index1.id_to_max_count[4] == 4
+assert index1.id_to_max_count[5] == 4
 
 
 

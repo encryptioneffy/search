@@ -20,7 +20,7 @@ class Index:
         self.title_to_id_dict = {}
         self.doc_dict = {}
         self.word_dict = {}
-        root = et.parse(sys.argv[1]).getroot()
+        root = et.parse(self.xml_file).getroot()
         self.all_pages = root.findall("page")
         self.words_to_id_to_count = {}
         self.page_to_links = {}
