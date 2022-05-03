@@ -9,6 +9,13 @@ import pytest
 from pytest import approx
 
 def test_parsing_xml():
-    index_ex = Index("wikis/test_tf_idf.xml", "title", "doc", "word")
-    assert len(index_ex.all_pages) == 3
+    index2 = Index("wikis/test_tf_idf.xml", "title", "doc", "word")
+    assert len(index2.all_pages) == 3
+    assert len(index2.id_to_title_dict.keys()) == 3
+    assert index2.id_to_title_dict[1] == "Page 1"
+    assert index2.id_to_title_dict[2] == "Page 2"
+    assert index2.id_to_title_dict[3] == "Page 3"
+    assert index2.all_pages[0].find("text").text == "the dog bit the man"
+    assert index2.all_pages[1].find("text").text == "the dog ate cheese"
+    assert index2.all_pages[2].find("text").text == "the cheese bit the cheese"
     # assert that the title & id & text are extracted properly?
