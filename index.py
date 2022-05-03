@@ -12,10 +12,10 @@ from nltk.stem import PorterStemmer
 
 class Index:
     def __init__(self, xml_file, title_file, doc_file, word_file):
-        self.xml_file = sys.argv[1]
-        self.title_file = sys.argv[2]
-        self.doc_file = sys.argv[3]
-        self.word_file = sys.argv[4]
+        self.xml_file = xml_file
+        self.title_file = title_file
+        self.doc_file = doc_file
+        self.word_file = word_file
         self.id_to_title_dict = {}
         self.title_to_id_dict = {}
         self.doc_dict = {}
