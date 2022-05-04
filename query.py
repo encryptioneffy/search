@@ -12,7 +12,9 @@ from nltk.stem import PorterStemmer
 
 # the read_titles function does not return anything; 
 # it populates the blank dictionary it takes in
-
+'''
+Query class
+'''
 class Query:
     def __init__(self):
         if len(sys.argv) == 5:
@@ -37,7 +39,14 @@ class Query:
 
         self.id_to_scores_dict = {}
 
-
+    '''
+    Tokenizes, removes stop words, and stems words
+    Parameters:
+        page_text -- string of the text in a page
+    
+        Returns:
+        list of the tokenized, stopped, and stemmed words
+    '''
     def tokenize_stop_stem(self, page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         nltk_stemmer = PorterStemmer()
@@ -51,7 +60,11 @@ class Query:
                 tokenized_words.append(nltk_stemmer.stem(word))
         
         return(tokenized_words)
-
+    '''
+    calculates the score for each page and puts score in dictionary for each page id
+    Parameters:
+        query_text -- string of the text from query
+    '''
     def make_score_dict(self, query_text : str) -> list:
         query_terms = self.tokenize_stop_stem(query_text)
 
@@ -68,7 +81,11 @@ class Query:
             self.id_to_scores_dict[page_id] = doc_score
             # should querier still return a page if no query terms in page?
 
-    
+    '''
+    Creates a pagerank dctionary if given pagerank in query
+    Parameters:
+        page_text -- string of the text in a page
+    '''
     def make_page_rank_dict(self, query_text : str) -> list:
         query_terms = self.tokenize_stop_stem(query_text)
 
@@ -86,7 +103,14 @@ class Query:
             
         # should querier still return a page if no query terms in page?
 
+    '''
+    Returns the score of the page????????
+    Parameters:
+        page_text -- string of the text in a page
     
+        Returns:
+        list of the tokenized, stopped, and stemmed words
+    '''
     def get_score(self, kv_tuple : tuple) -> float:
         return kv_tuple[1]
     

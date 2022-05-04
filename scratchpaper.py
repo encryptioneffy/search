@@ -1,5 +1,7 @@
 from array import array
+from msvcrt import setmode
 import sys
+from tracemalloc import stop
 import file_io
 import xml.etree.ElementTree as et
 import re
@@ -27,6 +29,7 @@ def tokenize_stop_stem(page_text : str) -> list:
         nltk_stemmer = PorterStemmer()
         tokenized_words = []
         list_of_link_titles = [] #list of all the page titles this page_text links to
+
 
         # TOKENIZE
         page_tokens = re.findall(n_regex, page_text)

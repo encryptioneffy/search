@@ -10,6 +10,10 @@ from nltk.corpus import stopwords
 STOP_WORDS = set(stopwords.words('english'))
 from nltk.stem import PorterStemmer
 
+'''
+Index class
+'''
+
 class Index:
     def __init__(self, xml_file, title_file, doc_file, word_file):
         self.xml_file = xml_file
@@ -40,8 +44,14 @@ class Index:
         self.weight_calculator()
         self.make_doc_dict()
         
-        
-
+    '''
+    Tokenizes, removes stop words, and stems words
+    Parameters:
+        page_text -- string of the text in a page
+    
+        Returns:
+        list of the tokenized, stopped, and stemmed words
+    '''
     def tokenize_stop_stem(self, page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         l_regex = '''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
@@ -83,7 +93,9 @@ class Index:
                     tokenized_words.append(nltk_stemmer.stem(word))
         
         return(tokenized_words, set_of_link_titles)
-
+    '''
+    Creates title to id dictionary
+    '''
     def make_title_dict(self):
         for page in self.all_pages:
             id: int = int(page.find("id").text)
@@ -92,6 +104,9 @@ class Index:
             self.title_to_id_dict[title] = id
         write_title_file(self.title_file, self.id_to_title_dict)
 
+    '''
+    Creates word to id to relevance dictionary
+    '''
     def make_word_dict(self):
 
         for page in self.all_pages:
@@ -131,13 +146,9 @@ class Index:
                 else:
                     self.words_to_id_tf[word][id] = (self.words_to_id_to_count[word][id]) / self.id_to_max_count[id]
 
-        
-        
-
-        
+ 
         for word in self.words_to_id_to_count.keys():
             n_i = len(self.words_to_id_to_count[word])
-            # if word not in words_to_idf:
             self.words_to_idf[word] = math.log(self.n/n_i)
 
         
@@ -147,11 +158,10 @@ class Index:
                     self.word_dict[word] = {id : self.words_to_id_tf[word][id] * self.words_to_idf[word]}
                 else: 
                     self.word_dict[word][id] = self.words_to_id_tf[word][id] * self.words_to_idf[word]
-        # print(self.words_to_id_tf)
-        # print(self.words_to_idf)
-        # print(self.id_to_max_count)
         write_words_file(self.word_file, self.word_dict)
-
+    '''
+    Creates id to list of ids (the ids it is linked to) dictionary 
+    '''
     def make_id_to_link_dict(self):
         for id in self.page_to_links:
             linked_ids = []
@@ -160,7 +170,9 @@ class Index:
                     if title in self.title_to_id_dict.keys():
                         linked_ids.append(self.title_to_id_dict[title])
             self.id_to_linked_ids[id] = linked_ids
-
+    '''
+    Creates id to pagerank dictionary 
+    '''
     def make_doc_dict(self):
         self.fill_rank_dicts()
         
@@ -175,7 +187,10 @@ class Index:
         self.doc_dict = self.new_rank_dict
 
         write_docs_file(self.doc_file, self.doc_dict)
-    
+    '''
+    Calculates the weight between two pages 
+    and fills a dictionary that is from to -> to id -> weight of to id 
+    '''
     def weight_calculator(self):
         for from_id in self.id_to_title_dict.keys():
             if len(self.id_to_linked_ids[from_id]) == 0:
@@ -200,8 +215,9 @@ class Index:
                 to_id_weight[to_id] = weight
             
             self.weight_dict[from_id] = to_id_weight
-        # print(self.weight_dict)
-
+    '''
+    Calculates distance between two dictionaries (used to calculate pagerank) 
+    '''
     def distance(self, old_rank, new_rank):
         total_distance = 0 
         for id in self.id_to_title_dict.keys():
@@ -213,22 +229,7 @@ class Index:
             self.old_rank_dict[id] = 0
             self.new_rank_dict[id] = 1/self.n
     
-
-
             
-
-
-
-
-    
-    
-
-
-
-        
-        
-
-                 
 
 if __name__ == "__main__":
     my_index = Index(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
