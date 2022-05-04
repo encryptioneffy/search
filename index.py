@@ -189,7 +189,7 @@ class Index:
         write_docs_file(self.doc_file, self.doc_dict)
     '''
     Calculates the weight between two pages 
-    and fills a dictionary that is from to -> to id -> weight of to id 
+    and fills a dictionary that is from id -> to id -> weight of to id 
     '''
     def weight_calculator(self):
         for from_id in self.id_to_title_dict.keys():
@@ -217,8 +217,11 @@ class Index:
             self.weight_dict[from_id] = to_id_weight
     '''
     Calculates distance between two dictionaries (used to calculate pagerank) 
+
+        Returns:
+        distance between the two pages
     '''
-    def distance(self, old_rank, new_rank):
+    def distance(self, old_rank, new_rank) -> float:
         total_distance = 0 
         for id in self.id_to_title_dict.keys():
             total_distance += ((old_rank[id] - new_rank[id]) ** 2)
@@ -232,6 +235,9 @@ class Index:
             
 '''
 Main method for Index that calls it
+
+    Raise:
+    IndexError if there are invalid number of inputs in sys.argv
 '''
 if __name__ == "__main__":
     try:

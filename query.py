@@ -47,6 +47,9 @@ class Query:
     
         Returns:
         list of the tokenized, stopped, and stemmed words
+
+        Raise:
+        ValueError if all words int he search are stop words
     '''
     def tokenize_stop_stem(self, page_text : str) -> list:
         n_regex = '''\[\[[^\[]+?\]\]|[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
@@ -142,7 +145,12 @@ class Query:
         return top_ten_titles
 
 
+'''
+Main method for Query
 
+    Raise:
+    IndexError if invalid number of inputs for sys.argv
+'''
 if __name__ == "__main__": 
         try:
             if len(sys.argv) < 4 or len(sys.argv) > 5:
