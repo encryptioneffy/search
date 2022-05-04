@@ -230,6 +230,14 @@ class Index:
             self.new_rank_dict[id] = 1/self.n
     
             
-
+'''
+Main method for Index that calls it
+'''
 if __name__ == "__main__":
-    my_index = Index(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    try:
+        if len(sys.argv) != 5:
+            raise IndexError("invalid number of inputs")
+        my_index = Index(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    except Exception as e:
+        if IndexError:
+            print("invalid number of inputs")

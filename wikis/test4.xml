@@ -1,0 +1,14 @@
+<xml>
+    <page><title>A</title><id>1</id><text>[[C]] [[C]] [[B]] Kim is fine. </text></page>
+    <page><title>B</title><id>2</id><text>[[D]] Kim is fine.</text></page>
+    <page><title>C</title><id>3</id><text>[[G]] [[I]] Kim is fine.</text></page>
+    <page><title>D</title><id>4</id><text>[[C]] [[F]] Kim is fine.</text></page>
+    <page><title>Fake News</title><id>5</id><text>[[F]] [[C]] Kim is pregnant!!!</text></page>
+    <page><title>F</title><id>6</id><text>[[A]] Kim is fine.</text></page>
+    <page><title>G</title><id>7</id><text>[[C]] [[A]] Kim is fine.</text></page>
+    <page><title>H</title><id>8</id><text>[[A]] Kim is fine.</text></page>
+    <page><title>I</title><id>9</id><text>[[H]] [[A]] [[K]] Kim is fine.</text></page>
+    <page><title>J</title><id>10</id><text>[[J]] [[C]] [[K]] Kim is fine.</text></page>
+    <page><title>K</title><id>11</id><text>[[J]] [[L]] [[K]] Kim is fine.</text></page>
+    <page><title>L</title><id>12</id><text>[[C]] is fine.</text></page>
+</xml>

@@ -1,4 +1,5 @@
 from array import array
+from ast import Index
 import sys
 import file_io
 from file_io import *
@@ -58,8 +59,10 @@ class Query:
             word = word.lower()
             if word not in STOP_WORDS:
                 tokenized_words.append(nltk_stemmer.stem(word))
-        
-        return(tokenized_words)
+        if len(tokenized_words) == 0:
+            raise ValueError("all query words are stop words")
+        else:
+            return(tokenized_words)
     '''
     calculates the score for each page and puts score in dictionary for each page id
     Parameters:
@@ -129,7 +132,8 @@ class Query:
         
         top_ten_ids = []
         for pair in top_ten_tuples:
-            top_ten_ids.append(pair[0])
+            if pair[1] > 0:
+                top_ten_ids.append(pair[0])
 
         top_ten_titles = []
         for id in top_ten_ids:
@@ -140,17 +144,27 @@ class Query:
 
 
 if __name__ == "__main__": 
-    while True:
-        user_input = input(">>search")
+        try:
+            if len(sys.argv) < 4 or len(sys.argv) > 5:
+                raise IndexError("invalid number of inputs")
+            while True:
+                user_input = input(">>search")
+                if user_input == ":quit":
+                    break
+                the_querier = Query()
+                if the_querier.page_rank_yn:
+                    the_querier.make_page_rank_dict(user_input)
+                else:
+                    the_querier.make_score_dict(user_input)
+                
+                print(the_querier.get_top_ten())
+        except IndexError as e:
+            print("invalid number of inputs")
+        except ValueError as e:
+            print("please enter non stop words in your query")
+        except Exception as e:
+            if user_input == "" or user_input == " ":
+                print("please do not leave the search query blank")
 
-        if user_input == ":quit":
-            break
 
-        the_querier = Query()
-        if the_querier.page_rank_yn:
-            the_querier.make_page_rank_dict(user_input)
-        else:
-            the_querier.make_score_dict(user_input)
-        
-        print(the_querier.get_top_ten())
         

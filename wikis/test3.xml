@@ -1,0 +1,57 @@
+<xml>
+  <page>
+    <title>
+      dog:category dog 
+    </title>
+    <id>
+      1
+    </id>
+    <text>
+      [[woof]] [[yorkie|bark]] pugs
+    </text>
+  </page>
+  <page>
+    <title>
+      woof
+    </title>
+    <id>
+      2
+    </id>
+    <text>
+      the [[dog:category dog|dog]] ate [[cheese|cheEsy]] woof
+    </text>
+  </page>
+  <page>
+    <title>
+      a
+    </title>
+    <id>
+      3
+    </id>
+    <text>
+      running cheesy cheesiest
+    </text>
+  </page>
+  <page>
+    <title>
+      cheese
+    </title>
+    <id>
+      4
+    </id>
+    <text>
+      run cheese bit runs [[cheese]] woof
+    </text>
+  </page>
+  <page>
+    <title>
+      yorkie
+    </title>
+    <id>
+      5
+    </id>
+    <text>
+      the bit the woof
+    </text>
+  </page>
+</xml>
