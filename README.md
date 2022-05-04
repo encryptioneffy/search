@@ -115,6 +115,7 @@ Query Edge Cases Tests
   [Page 1, Page 2]
 
 
+
 Query Basic Cases Tests
 1) one word query
 INPUT:
@@ -164,6 +165,7 @@ python3 query.py "title" "doc" "word"
 after the ">>search" appears, type "oil pollution middle east" and press enter
 RETURNED:
 ['Imperialism in Asia', 'East Slavic languages', 'Great Schism', 'Kent', 'History of Lebanon', 'West Low German', 'Nassau, Bahamas', 'Northern Hemisphere', 'Lower Mainland', 'Geography of Kenya']
+
 
 
 SysArg Tests
