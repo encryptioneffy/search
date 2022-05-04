@@ -90,7 +90,7 @@ Query Edge Cases Tests
 9) some words not in corpus, some words are in corpus 
 --> ignores the non-corpus words. When we compare the top 10 list to the same query with the non-corpus words NOT included, the top 10 lists will be the same.
 
-  INPUT:
+  INPUTTED:
   python3 index.py "wikis\SmallWiki.xml" "title" "doc" "word"
   python3 query.py "title" "doc" "word" in the terminal
   after the ">>search" appears, type "funky english war" and press enter
@@ -112,11 +112,11 @@ Query Edge Cases Tests
 
 Query Basic Cases Tests
 1) one word query
-2) multi-word query
-3) one word query with page rank
-4) one word query without page rank
-5) multi-word query with page rank
-6) multi-word query without page rank
+3) multi-word query
+4) one word query with page rank
+5) one word query without page rank
+6) multi-word query with page rank
+7) multi-word query without page rank
 
 SysArg Tests
 1) fewer than 4 sysargs given
