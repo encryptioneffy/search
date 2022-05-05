@@ -170,38 +170,68 @@ RETURNED:
 
 SysArg Tests
 1) index fewer than 5 sysargs given
+
 INPUT:
 python3 index.py "wikis\MedWiki.xml" "title" "doc"
 RETURNED:
-'invalid number of inputs'
+print message 'invalid number of inputs'
 
 2) index more than 5 sysargs given
+
 INPUT:
 python3 index.py "wikis\MedWiki.xml" "title" "doc" "word" "rando"
 RETURNED:
-'invalid number of inputs'
+print message 'invalid number of inputs'
 
 3) query more than 5 sysargs given
+
 INPUT:
 python3 query.py --pagerank "title" "doc" "word" "rando"
 RETURNED:
-'invalid number of inputs'
+print message 'invalid number of inputs'
 
 4) query fewer than 5 sysargs given
+
 INPUT:
 python3 query.py "doc" "word" 
 RETURNED:
-'invalid number of inputs'
+print message 'invalid number of inputs'
 
 5) no sysargs were given following python3 index.py 
+
 INPUT:
 python3 index.py
 RETURNED:
-'invalid number of inputs'
+print message 'invalid number of inputs'
 
 6) no sysargs were given following python3 query.py
+
 INPUT:
 python3 query.py
 RETURNED:
-'invalid number of inputs'
+print message 'invalid number of inputs'
 
+7) invalid xml filepath sysarg for python3 index.py
+
+INPUT:
+python3 index.py "nonexistentXMLfile" "title" "doc" "word"
+RETURNED:
+print message 'invalid xml file path'
+
+8) wrong filepath sysargs for python3 query,py
+
+INPUT: 
+python3 query.py "title" "doc" "filethatdoesnotexist" "word"
+RETURNED:
+print message 'invalid file paths'
+
+
+INPUT:
+python3 query.py --pagerank "title" "doc" "nonexistentfile" 
+RETURNED:
+print message 'invalid file paths'
+
+INPUT:
+python3 query.py "nonexistentfile" "doc" "word"
+RETURNED:
+print message 'invalid file paths'
