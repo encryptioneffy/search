@@ -10,6 +10,8 @@ import math
 from nltk.corpus import stopwords
 STOP_WORDS = set(stopwords.words('english'))
 from nltk.stem import PorterStemmer
+import os.path
+from os.path import exists
 
 # the read_titles function does not return anything; 
 # it populates the blank dictionary it takes in
@@ -19,15 +21,23 @@ Query class
 class Query:
     def __init__(self):
         if len(sys.argv) == 5:
-            self.page_rank_yn = True
-            self.title_file = sys.argv[2]
-            self.doc_file = sys.argv[3]
-            self.word_file = sys.argv[4]
+            if os.path.exists(sys.argv[2]) and os.path.exists(sys.argv[3]) and os.path.exists(sys.argv[4]):
+                self.page_rank_yn = True
+                self.title_file = sys.argv[2]
+                self.doc_file = sys.argv[3]
+                self.word_file = sys.argv[4]
+            else:
+                raise ValueError("invalid file paths")
+        elif len(sys.argv) == 4:
+            if os.path.exists(sys.argv[1]) and os.path.exists(sys.argv[2]) and os.path.exists(sys.argv[3]):
+                self.page_rank_yn = False
+                self.title_file = sys.argv[1]
+                self.doc_file = sys.argv[2]
+                self.word_file = sys.argv[3]
+            else: 
+                raise ValueError("invalid file paths")
         else:
-            self.page_rank_yn = False
-            self.title_file = sys.argv[1]
-            self.doc_file = sys.argv[2]
-            self.word_file = sys.argv[3]
+            raise IndexError("invalid number of inputs")
 
         self.title_dict = {}
         read_title_file(self.title_file, self.title_dict)
@@ -156,10 +166,10 @@ if __name__ == "__main__":
             if len(sys.argv) < 4 or len(sys.argv) > 5:
                 raise IndexError("invalid number of inputs")
             while True:
+                the_querier = Query()
                 user_input = input(">>search")
                 if user_input == ":quit":
                     break
-                the_querier = Query()
                 if the_querier.page_rank_yn:
                     the_querier.make_page_rank_dict(user_input)
                 else:
@@ -169,7 +179,7 @@ if __name__ == "__main__":
         except IndexError as e:
             print("invalid number of inputs")
         except ValueError as e:
-            print("please enter non stop words in your query")
+            print(e)
         except Exception as e:
             if user_input == "" or user_input == " ":
                 print("please do not leave the search query blank")

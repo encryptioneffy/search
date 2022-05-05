@@ -9,6 +9,8 @@ import math
 from nltk.corpus import stopwords
 STOP_WORDS = set(stopwords.words('english'))
 from nltk.stem import PorterStemmer
+import os.path
+from os.path import exists
 
 '''
 Index class
@@ -241,9 +243,14 @@ Main method for Index that calls it
 '''
 if __name__ == "__main__":
     try:
+        if os.path.exists(sys.argv[1]):
+            my_index = Index(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+        else:
+            raise ValueError("invalid xml file path")
         if len(sys.argv) != 5:
             raise IndexError("invalid number of inputs")
         my_index = Index(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
-    except Exception as e:
-        if IndexError:
-            print("invalid number of inputs")
+    except IndexError as e:
+        print("invalid number of inputs")
+    except ValueError as e:
+        print("invalid xml file path")
