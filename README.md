@@ -1,3 +1,7 @@
+# Search
+- Type: Backend Project
+- Status: Completed
+
 # search-encryptioneffy-jessicaliu526
 encryptioneffy-jessicaliu526 team's search repo
 
